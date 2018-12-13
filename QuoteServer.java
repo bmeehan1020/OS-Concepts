@@ -12,10 +12,10 @@
 import java.net.*;
 import java.io.*;
          
-public class DateServer {
+public class QuoteServer {
 	public static void main(String[] args) {
 		try {
-			ServerSocket sock = new ServerSocket(6013);
+			ServerSocket sock = new ServerSocket(6017);
 
 			/* now listen for connections */ 
 			while (true) {
@@ -24,8 +24,9 @@ public class DateServer {
                PrintWriter pout = new
                PrintWriter(client.getOutputStream(), true);
 
+               String quote = "Snitches get stitches";
                /* write the Date to the socket */
-               pout.println(new java.util.Date().toString());
+               pout.println(quote);
 
                /* close the socket and resume */
                /* listening for connections */
