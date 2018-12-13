@@ -8,6 +8,7 @@
  * Ordinary pipes are a simple example of Interprocess Communication (IPC)
  */
 
+#include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +19,23 @@
 #define READ_END 0
 #define WRITE_END 1
 
-void reverse_case(char* s);
+/*
+ * Takes a string and reverses the case of each character
+ * e.g. "Have a Nice Day!" -> "hAVE A nICE dAY!"
+ */
+void reverse_case(char* s){
+	int c = 0;
+
+	while(s[c] != '\0'){
+		if(islower(s[c])){
+			s[c] = toupper(s[c]);
+		}
+		else if (isupper(s[c])){
+			s[c] = tolower(s[c]);
+		}
+		c++;
+	}
+}
 
 int main(void)
 {
@@ -58,7 +75,7 @@ int main(void)
 		read(output_pipefd[READ_END], read_msg, BUFFER_SIZE);
 		
 		// print altered message to stdout
-		printf("Parent process received " + read_msg + " from output pipe\n");
+		printf("%s", read_msg);
 
 		// close both pipes
 		close(input_pipefd[WRITE_END]);
@@ -71,15 +88,12 @@ int main(void)
 
 		// read message from input pipe
 		read(input_pipefd[READ_END], read_msg, BUFFER_SIZE);
-		printf("Child process received: " + read_msg + " from input pipe\n");
 
-		// reverse case of each character in message
+		// reverse case of each character in message_msg);
 		reverse_case(read_msg);
-		write_msg = read_msg;
-		printf("Reverse-case message is: \n" write_msg);
 
 		// write altered message into output pipe
-		write(output_pipefd[WRITE_END], write_msg, strlen(write_msg)+1);
+		write(output_pipefd[WRITE_END], read_msg, strlen(read_msg)+1);
 
 		// close both pipes
 		close(input_pipefd[READ_END]);
@@ -88,22 +102,3 @@ int main(void)
 
 	return 0;
 }
-
-/*
- * Takes a string and reverses the case of each character
- * e.g. "Have a Nice Day!" -> "hAVE A nICE dAY!"
- */
-void reverse_case(char* s){
-	int c = 0;
-
-	while(s[c] != '\0'){
-		if(isLower(s[c])){
-			s[c] = s[c].toUpper();
-		}
-		else if (isUpper(s[c])){
-			s[c] = s[c].toLower();
-		}
-		c++;
-	}
-}
-
